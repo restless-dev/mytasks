@@ -1,7 +1,12 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import { AppError } from '../utils/AppError.js';
 
-const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+const errorHandler = (
+  err: any,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void => {
   let error = { ...err };
   error.message = err.message;
 
@@ -9,10 +14,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
     const message = err.message;
     const match = message.match(/\(`(.+?)`\)/);
 
-    error = new AppError(
-      `This ${match?.[1] ?? ''} is already in use.`,
-      400
-    );
+    error = new AppError(`This ${match?.[1] ?? ''} is already in use.`, 400);
   }
 
   if (err.name === 'JsonWebTokenError') {
@@ -30,19 +32,19 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
       status,
       message: error.message,
       stack: err.stack,
-      error: err
+      error: err,
     });
   } else {
     if (error.isOperational) {
       res.status(statusCode).json({
         status,
-        message: error.message
+        message: error.message,
       });
     } else {
       console.error('ERROR 💥', err);
       res.status(500).json({
         status: 'error',
-        message: 'Something went wrong.'
+        message: 'Something went wrong.',
       });
     }
   }

@@ -41,6 +41,6 @@
     "noUncheckedSideEffectImports": true,
     "skipLibCheck": true,
     "strict": true,
-    "verbatimModuleSyntax": false,
+    "verbatimModuleSyntax": false
   }
 }

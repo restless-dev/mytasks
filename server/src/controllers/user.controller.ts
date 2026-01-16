@@ -1,38 +1,52 @@
-import { RequestHandler } from 'express';
-import { prisma } from '../lib/prisma.js';
+import type { NextFunction, Request, Response } from 'express';
+import {
+  deleteUser as deleteUserService,
+  getAllUsers as getAllUsersService,
+  updateUser as updateUserService,
+} from '../services/user.service.js';
 
-export const getAllUsers: RequestHandler = async (req, res, next) => {
+export const getAllUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
-    const users = await prisma.user.findMany();
+    const users = await getAllUsersService();
+
     res.json(users);
   } catch (err) {
     next(err);
   }
 };
 
-export const updateUser: RequestHandler = async (req, res, next) => {
+export const updateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
-    const { id } = req.params;
+    const userId = Number(req.params.id);
+    const loggedUserId = req.user!.userId;
     const { username } = req.body;
 
-    const user = await prisma.user.update({
-      where: { id: Number(id) },
-      data: { username }
-    });
+    const updatedUser = await updateUserService(userId, loggedUserId, username);
 
-    res.json(user);
+    res.json(updatedUser);
   } catch (err) {
     next(err);
   }
 };
 
-export const deleteUser: RequestHandler = async (req, res, next) => {
+export const deleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
-    const { id } = req.params;
+    const userId = Number(req.params.id);
+    const loggedInUserId = req.user!.userId;
 
-    await prisma.user.delete({
-      where: { id: Number(id) }
-    });
+    await deleteUserService(userId, loggedInUserId);
 
     res.status(204).send();
   } catch (err) {

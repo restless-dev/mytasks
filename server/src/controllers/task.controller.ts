@@ -1,15 +1,20 @@
-import { Request, Response, NextFunction } from 'express';
-import { AppError } from '../utils/AppError.js';
-import { prisma } from '../lib/prisma.js';
+import type { Request, Response, NextFunction } from 'express';
+import {
+  createTask as createTaskService,
+  deleteTask as deleteTaskService,
+  getTasks as getTasksService,
+  updateTask as updateTaskService,
+} from '../services/task.service.js';
 
-export const getTasks = async (req: Request, res: Response, next: NextFunction) => {
+export const getTasks = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const userId = req.user!.userId;
 
-    const tasks = await prisma.task.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' }
-    });
+    const tasks = await getTasksService(userId);
 
     res.json(tasks);
   } catch (err) {
@@ -17,18 +22,20 @@ export const getTasks = async (req: Request, res: Response, next: NextFunction) 
   }
 };
 
-export const createTask = async (req: Request, res: Response, next: NextFunction) => {
+export const createTask = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
-    const userId = req.user!.userId;
-    const { title, description } = req.body;
+    const { columnId, description, title, urgent } = req.body;
 
-    const task = await prisma.task.create({
-      data: {
-        title,
-        description,
-        userId
-      }
-    });
+    const task = await createTaskService(
+      Number(columnId),
+      description,
+      title,
+      urgent,
+    );
 
     res.status(201).json(task);
   } catch (err) {
@@ -36,46 +43,38 @@ export const createTask = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-export const updateTask = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-    const userId = req.user!.userId;
+export const updateTask = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
     const { id } = req.params;
-    const { title, description, completed } = req.body;
+    const { completed, description, title, urgent } = req.body;
 
-    const result = await prisma.task.updateMany({
-      where: {
-        id: Number(id),
-        userId
-      },
-      data: {
-        title,
-        description,
-        completed
-      }
-    });
+    const updatedTask = await updateTaskService(
+      Number(id),
+      completed,
+      description,
+      title,
+      urgent,
+    );
 
-    if (result.count === 0) return next(new AppError('Task not found.', 404));
-
-    const updatedTask = await prisma.task.findUnique({ where: { id: Number(id) } });
     res.json(updatedTask);
   } catch (err) {
     next(err);
   }
 };
 
-export const deleteTask = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteTask = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
-    const userId = req.user!.userId;
     const { id } = req.params;
 
-    const result = await prisma.task.deleteMany({
-      where: {
-        id: Number(id),
-        userId: userId
-      }
-    });
-
-    if (result.count === 0) return next(new AppError('Task not found.', 404));
+    await deleteTaskService(Number(id));
 
     res.status(204).send();
   } catch (err) {

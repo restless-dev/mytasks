@@ -15,26 +15,18 @@ export type BoardPayload = {
 };
 
 export const getBoards = async (userId: number): Promise<BoardPayload[]> => {
-  try {
-    const boards = await getBoardsRepository(userId);
+  const boards = await getBoardsRepository(userId);
 
-    return boards;
-  } catch (err) {
-    throw err;
-  }
+  return boards;
 };
 
 export const createBoard = async (
   userId: number,
   title: string,
 ): Promise<BoardPayload> => {
-  try {
-    const board = await createBoardRepository(userId, title);
+  const board = await createBoardRepository(userId, title);
 
-    return board;
-  } catch (err) {
-    throw err;
-  }
+  return board;
 };
 
 export const updateBoard = async (
@@ -42,24 +34,16 @@ export const updateBoard = async (
   id: number,
   title?: string,
 ): Promise<BoardPayload> => {
-  try {
-    const updatedBoard = updateBoardRepository(id, userId, title);
+  const updatedBoard = updateBoardRepository(id, userId, title);
 
-    if (!updatedBoard) throw new AppError('Board not found.', 404);
+  if (!updatedBoard) throw new AppError('Board not found.', 404);
 
-    return updatedBoard;
-  } catch (err) {
-    throw err;
-  }
+  return updatedBoard;
 };
 
 export const deleteBoard = async (
   id: number,
   userId: number,
 ): Promise<void> => {
-  try {
-    await deleteBoardRepository(id, userId);
-  } catch (err) {
-    throw err;
-  }
+  await deleteBoardRepository(id, userId);
 };

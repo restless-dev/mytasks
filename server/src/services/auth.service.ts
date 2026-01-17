@@ -18,37 +18,29 @@ export const signup = async (
   password: string,
   username: string,
 ): Promise<UserPartial> => {
-  try {
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
+  const salt = await bcrypt.genSalt();
+  const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = await createUser(email, hashedPassword, username);
+  const user = await createUser(email, hashedPassword, username);
 
-    return user;
-  } catch (err) {
-    throw err;
-  }
+  return user;
 };
 
 export const login = async (
   email: string,
   password: string,
 ): Promise<UserPayload> => {
-  try {
-    const user = await getUser(email);
+  const user = await getUser(email);
 
-    if (!user) throw new AppError('This email is not signed up.', 401);
+  if (!user) throw new AppError('This email is not signed up.', 401);
 
-    if (!(await bcrypt.compare(password, user.password!))) {
-      throw new AppError('This password is incorrect.', 401);
-    }
-
-    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, {
-      expiresIn: '1h',
-    });
-
-    return { user, token };
-  } catch (err) {
-    throw err;
+  if (!(await bcrypt.compare(password, user.password!))) {
+    throw new AppError('This password is incorrect.', 401);
   }
+
+  const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, {
+    expiresIn: '1h',
+  });
+
+  return { user, token };
 };

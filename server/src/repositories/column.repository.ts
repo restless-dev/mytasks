@@ -6,33 +6,29 @@ export const createColumn = async (
   boardId: number,
   title: string,
 ): Promise<ColumnPayload> => {
-  try {
-    const column = await prisma.column.create({
-      data: {
-        boardId,
-        title,
-      },
-      select: {
-        id: true,
-        title: true,
-        boardId: true,
-        tasks: {
-          select: {
-            id: true,
-            title: true,
-            description: true,
-            completed: true,
-            urgent: true,
-            columnId: true,
-          },
+  const column = await prisma.column.create({
+    data: {
+      boardId,
+      title,
+    },
+    select: {
+      id: true,
+      title: true,
+      boardId: true,
+      tasks: {
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          completed: true,
+          urgent: true,
+          columnId: true,
         },
       },
-    });
+    },
+  });
 
-    return column;
-  } catch (err) {
-    throw err;
-  }
+  return column;
 };
 
 export const updateColumn = async (
@@ -40,52 +36,44 @@ export const updateColumn = async (
   id: number,
   title?: string,
 ): Promise<ColumnPayload> => {
-  try {
-    const data: Prisma.ColumnUpdateInput = {};
+  const data: Prisma.ColumnUpdateInput = {};
 
-    if (title !== undefined) data.title = title;
+  if (title !== undefined) data.title = title;
 
-    const updatedColumn = await prisma.column.update({
-      where: {
-        id: id,
-        board: { user: { id: userId } },
-      },
-      data,
-      select: {
-        id: true,
-        title: true,
-        boardId: true,
-        tasks: {
-          select: {
-            id: true,
-            title: true,
-            description: true,
-            completed: true,
-            urgent: true,
-            columnId: true,
-          },
+  const updatedColumn = await prisma.column.update({
+    where: {
+      id: id,
+      board: { user: { id: userId } },
+    },
+    data,
+    select: {
+      id: true,
+      title: true,
+      boardId: true,
+      tasks: {
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          completed: true,
+          urgent: true,
+          columnId: true,
         },
       },
-    });
+    },
+  });
 
-    return updatedColumn;
-  } catch (err) {
-    throw err;
-  }
+  return updatedColumn;
 };
 
 export const deleteColumn = async (
   userId: number,
   id: number,
 ): Promise<void> => {
-  try {
-    await prisma.column.deleteMany({
-      where: {
-        id: id,
-        board: { user: { id: userId } },
-      },
-    });
-  } catch (err) {
-    throw err;
-  }
+  await prisma.column.deleteMany({
+    where: {
+      id: id,
+      board: { user: { id: userId } },
+    },
+  });
 };

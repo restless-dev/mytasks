@@ -28,13 +28,14 @@ export const createTask = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const { columnId, description, title, urgent } = req.body;
+    const { columnId, description, title, urgent, icon } = req.body;
 
     const task = await createTaskService(
       Number(columnId),
       description,
       title,
       urgent,
+      icon,
     );
 
     res.status(201).json(task);
@@ -50,14 +51,16 @@ export const updateTask = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const { completed, description, title, urgent } = req.body;
+    const { columnId, completed, description, title, urgent, icon } = req.body;
 
     const updatedTask = await updateTaskService(
       Number(id),
+      columnId,
       completed,
       description,
       title,
       urgent,
+      icon,
     );
 
     res.json(updatedTask);

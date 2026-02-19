@@ -5,13 +5,16 @@ import { prisma } from '../lib/prisma.js';
 export const createColumn = async (
   boardId: number,
   title: string,
+  icon?: string,
 ): Promise<ColumnPayload> => {
   const column = await prisma.column.create({
     data: {
       boardId,
       title,
+      ...(icon && { icon }),
     },
     select: {
+      icon: true,
       id: true,
       title: true,
       boardId: true,
@@ -19,6 +22,7 @@ export const createColumn = async (
         select: {
           id: true,
           title: true,
+          icon: true,
           description: true,
           completed: true,
           urgent: true,
@@ -35,10 +39,12 @@ export const updateColumn = async (
   userId: number,
   id: number,
   title?: string,
+  icon?: string,
 ): Promise<ColumnPayload> => {
   const data: Prisma.ColumnUpdateInput = {};
 
   if (title !== undefined) data.title = title;
+  if (icon !== undefined) data.icon = icon;
 
   const updatedColumn = await prisma.column.update({
     where: {
@@ -47,6 +53,7 @@ export const updateColumn = async (
     },
     data,
     select: {
+      icon: true,
       id: true,
       title: true,
       boardId: true,
@@ -54,6 +61,7 @@ export const updateColumn = async (
         select: {
           id: true,
           title: true,
+          icon: true,
           description: true,
           completed: true,
           urgent: true,

@@ -2,6 +2,7 @@
 CREATE TABLE "Board" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
+    "icon" TEXT NOT NULL DEFAULT '🗃️',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "userId" INTEGER NOT NULL,
@@ -13,6 +14,7 @@ CREATE TABLE "Board" (
 CREATE TABLE "Column" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
+    "icon" TEXT NOT NULL DEFAULT '🗂️',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "boardId" INTEGER NOT NULL,
@@ -35,6 +37,7 @@ CREATE TABLE "User" (
 CREATE TABLE "Task" (
     "id" SERIAL NOT NULL,
     "title" VARCHAR(50) NOT NULL,
+    "icon" TEXT NOT NULL DEFAULT '📑',
     "description" VARCHAR(500),
     "completed" BOOLEAN NOT NULL DEFAULT false,
     "urgent" BOOLEAN NOT NULL DEFAULT false,

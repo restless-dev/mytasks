@@ -8,6 +8,7 @@ import type { TaskPayload } from './task.service.js';
 
 export type ColumnPayload = {
   boardId: number;
+  icon: string;
   id: number;
   tasks: TaskPayload[];
   title: string;
@@ -16,8 +17,9 @@ export type ColumnPayload = {
 export const createColumn = async (
   boardId: number,
   title: string,
+  icon?: string,
 ): Promise<ColumnPayload> => {
-  const column = await createColumnRepository(boardId, title);
+  const column = await createColumnRepository(boardId, title, icon);
 
   return column;
 };
@@ -26,8 +28,9 @@ export const updateColumn = async (
   userId: number,
   id: number,
   title?: string,
+  icon?: string,
 ): Promise<ColumnPayload> => {
-  const updatedColumn = updateColumnRepository(userId, id, title);
+  const updatedColumn = await updateColumnRepository(userId, id, title, icon);
 
   if (!updatedColumn) throw new AppError('Column not found.', 404);
 

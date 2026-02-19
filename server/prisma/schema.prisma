@@ -10,6 +10,7 @@ datasource db {
 model Board {
   id          Int       @id @default(autoincrement())
   title       String
+  icon        String    @default("🗃️")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   columns     Column[]
@@ -20,6 +21,7 @@ model Board {
 model Column {
   id          Int       @id @default(autoincrement())
   title       String
+  icon        String    @default("🗂️")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   tasks       Task[]
@@ -39,6 +41,7 @@ model User {
 model Task {
   id          Int       @id @default(autoincrement())
   title       String    @db.VarChar(50)
+  icon        String    @default("📑")
   description String?   @db.VarChar(500)
   completed   Boolean   @default(false)
   urgent      Boolean   @default(false)

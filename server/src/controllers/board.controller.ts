@@ -29,9 +29,9 @@ export const createBoard = async (
 ): Promise<void> => {
   try {
     const userId = req.user!.userId;
-    const { title } = req.body;
+    const { icon, title } = req.body;
 
-    const board = await createBoardService(userId, title);
+    const board = await createBoardService(userId, title, icon);
 
     res.status(201).json(board);
   } catch (err) {
@@ -47,9 +47,14 @@ export const updateBoard = async (
   try {
     const userId = req.user!.userId;
     const { id } = req.params;
-    const { title } = req.body;
+    const { icon, title } = req.body;
 
-    const updatedBoard = await updateBoardService(userId, Number(id), title);
+    const updatedBoard = await updateBoardService(
+      userId,
+      Number(id),
+      title,
+      icon,
+    );
 
     res.json(updatedBoard);
   } catch (err) {

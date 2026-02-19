@@ -11,9 +11,9 @@ export const createColumn = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const { boardId, title } = req.body;
+    const { boardId, icon, title } = req.body;
 
-    const column = await createColumnService(Number(boardId), title);
+    const column = await createColumnService(Number(boardId), title, icon);
 
     res.status(201).json(column);
   } catch (err) {
@@ -29,9 +29,14 @@ export const updateColumn = async (
   try {
     const userId = req.user!.userId;
     const { id } = req.params;
-    const { title } = req.body;
+    const { icon, title } = req.body;
 
-    const updatedColumn = await updateColumnService(userId, Number(id), title);
+    const updatedColumn = await updateColumnService(
+      userId,
+      Number(id),
+      title,
+      icon,
+    );
     res.json(updatedColumn);
   } catch (err) {
     next(err);

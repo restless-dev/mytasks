@@ -1,18 +1,19 @@
+import type { TaskPayload } from '../services/task.service.js';
 import type { Prisma } from '../generated/client/index.js';
 import { prisma } from '../lib/prisma.js';
-import type { TaskPayload } from '../services/task.service.js';
 
 export const getTasks = async (userId: number): Promise<TaskPayload[]> => {
   const tasks = await prisma.task.findMany({
     where: { column: { board: { userId } } },
-    orderBy: [{ urgent: 'desc' }, { createdAt: 'desc' }],
+    orderBy: [{ createdAt: 'desc' }],
     select: {
+      columnId: true,
+      completed: true,
+      description: true,
+      icon: true,
       id: true,
       title: true,
-      description: true,
-      completed: true,
       urgent: true,
-      columnId: true,
     },
   });
 
@@ -24,6 +25,7 @@ export const createTask = async (
   description: string,
   title: string,
   urgent?: boolean,
+  icon?: string,
 ): Promise<TaskPayload> => {
   const task = await prisma.task.create({
     data: {
@@ -31,14 +33,16 @@ export const createTask = async (
       description,
       title,
       urgent: urgent || false,
+      ...(icon && { icon }),
     },
     select: {
+      columnId: true,
+      completed: true,
+      description: true,
+      icon: true,
       id: true,
       title: true,
-      description: true,
-      completed: true,
       urgent: true,
-      columnId: true,
     },
   });
 
@@ -47,40 +51,41 @@ export const createTask = async (
 
 export const updateTask = async (
   id: number,
+  columnId?: number,
   completed?: boolean,
   description?: string,
   title?: string,
   urgent?: boolean,
+  icon?: string,
 ): Promise<TaskPayload> => {
   const data: Prisma.TaskUpdateInput = {};
 
+  if (columnId !== undefined) data.column = { connect: { id: columnId } };
   if (completed !== undefined) data.completed = completed;
   if (description !== undefined) data.description = description;
   if (title !== undefined) data.title = title;
   if (urgent !== undefined) data.urgent = urgent;
+  if (icon !== undefined) data.icon = icon;
 
-  const result = await prisma.task.update({
-    where: {
-      id: id,
-    },
+  const updatedTask = await prisma.task.update({
+    where: { id },
     data,
     select: {
+      columnId: true,
+      completed: true,
+      description: true,
+      icon: true,
       id: true,
       title: true,
-      description: true,
-      completed: true,
       urgent: true,
-      columnId: true,
     },
   });
 
-  return result;
+  return updatedTask;
 };
 
 export const deleteTask = async (id: number): Promise<void> => {
   await prisma.task.delete({
-    where: {
-      id: id,
-    },
+    where: { id },
   });
 };

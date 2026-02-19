@@ -7,12 +7,13 @@ import {
 } from '../repositories/task.repository.js';
 
 export type TaskPayload = {
+  columnId: number;
+  completed: boolean;
+  description: string | null;
+  icon: string;
   id: number;
   title: string;
-  description: string | null;
-  completed: boolean;
   urgent: boolean;
-  columnId: number;
 };
 
 export const getTasks = async (userId: number): Promise<TaskPayload[]> => {
@@ -26,25 +27,36 @@ export const createTask = async (
   description: string,
   title: string,
   urgent?: boolean,
+  icon?: string,
 ): Promise<TaskPayload> => {
-  const task = await createTaskRepository(columnId, description, title, urgent);
+  const task = await createTaskRepository(
+    columnId,
+    description,
+    title,
+    urgent,
+    icon,
+  );
 
   return task;
 };
 
 export const updateTask = async (
   id: number,
+  columnId?: number,
   completed?: boolean,
   description?: string,
   title?: string,
   urgent?: boolean,
+  icon?: string,
 ): Promise<TaskPayload> => {
-  const updatedTask = updateTaskRepository(
+  const updatedTask = await updateTaskRepository(
     id,
+    columnId,
     completed,
     description,
     title,
     urgent,
+    icon,
   );
 
   if (!updatedTask) throw new AppError('Task not found.', 404);

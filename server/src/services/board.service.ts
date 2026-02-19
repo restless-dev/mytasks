@@ -9,6 +9,7 @@ import {
 
 export type BoardPayload = {
   columns: ColumnPayload[];
+  icon: string;
   id: number;
   title: string;
   userId: number;
@@ -23,8 +24,9 @@ export const getBoards = async (userId: number): Promise<BoardPayload[]> => {
 export const createBoard = async (
   userId: number,
   title: string,
+  icon?: string,
 ): Promise<BoardPayload> => {
-  const board = await createBoardRepository(userId, title);
+  const board = await createBoardRepository(userId, title, icon);
 
   return board;
 };
@@ -33,8 +35,9 @@ export const updateBoard = async (
   userId: number,
   id: number,
   title?: string,
+  icon?: string,
 ): Promise<BoardPayload> => {
-  const updatedBoard = updateBoardRepository(id, userId, title);
+  const updatedBoard = await updateBoardRepository(id, userId, title, icon);
 
   if (!updatedBoard) throw new AppError('Board not found.', 404);
 

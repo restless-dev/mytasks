@@ -20,7 +20,7 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/boards', boardRoutes);
-app.use('/api/column', columnRoutes);
+app.use('/api/columns', columnRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/users', userRoutes);
 
